@@ -1,0 +1,64 @@
+<div class="board-container">
+    <!-- Barra de herramientas -->
+    <div class="toolbar">
+        <div class="tool-group">
+            <input type="color" [(ngModel)]="currentColor" title="Color de dibujo">
+            <select [(ngModel)]="currentBrushSize" title="Tamaño de pincel">
+                <option [value]="1">Fino</option>
+                <option [value]="3">Medio</option>
+                <option [value]="5">Grueso</option>
+            </select>
+        </div>
+
+        <div class="tool-group note-tools">
+            <input type="text" [(ngModel)]="noteText" placeholder="Texto de la nota" (keyup.enter)="addNote()">
+            <input type="color" [(ngModel)]="noteColor" title="Color de la nota" value="#ffeb3b">
+            <button (click)="addNote()" [disabled]="!noteText.trim()">Añadir nota</button>
+        </div>
+
+        <div class="tool-group">
+            <button class="danger" (click)="clearBoard()">Limpiar tablero</button>
+            <button (click)="logout()">Salir</button>
+        </div>
+    </div>
+
+    <!-- Canvas para dibujo -->
+    <canvas #canvas (mousedown)="startDrawing($event)" (mousemove)="draw($event)" (mouseup)="stopDrawing()"
+        (mouseleave)="stopDrawing()">
+    </canvas>
+
+    <!-- Notas adhesivas -->
+    <div class="note" *ngFor="let note of notes" [style.left.px]="note.X" [style.top.px]="note.Y"
+        [style.background-color]="note.Color" draggable="true" (dragend)="updateNotePosition(note, $event)">
+        <div class="note-header">
+            <small *ngIf="note.ConnectionId">Por: {{ getUsernameById(note.ConnectionId) }}</small>
+            <button class="delete-btn" (click)="deleteNote(note.Id!)">×</button>
+        </div>
+        <div class="note-content">{{ note.Text }}</div>
+    </div>
+
+    <!-- Panel lateral -->
+    <div class="side-panel">
+        <!-- Lista de usuarios -->
+        <div class="panel-section">
+            <h3>Usuarios conectados ({{ users.length }})</h3>
+            <ul class="user-list">
+                <li *ngFor="let user of users">
+                    {{ user.Username }}
+                    <small *ngIf="user.ConnectionId === boardService.getCurrentConnectionId()"> (tú)</small>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Historial de acciones -->
+        <div class="panel-section">
+            <h3>Historial de acciones</h3>
+            <div class="actions-list">
+                <div class="action-item" *ngFor="let action of actions">
+                    <small>{{ action.Timestamp | date:'short' }}</small>
+                    <div>{{ action.Description }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
