@@ -12,15 +12,15 @@ import { Router } from '@angular/router';
   ], // Aquí puedes importar otros módulos si es necesario
   template: `
     <div class="login-container">
-      <h2>Únete al Tablero Colaborativo</h2>
+      <h2>Join the Collaborative Board</h2>
       <div class="login-form">
         <input 
           type="text" 
           [(ngModel)]="username" 
-          placeholder="Tu nombre"
+          placeholder="Your name"
           (keyup.enter)="join()">
         <button (click)="join()" [disabled]="!username.trim()">
-          Entrar
+          Sign In
         </button>
       </div>
     </div>

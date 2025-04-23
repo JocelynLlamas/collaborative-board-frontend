@@ -1,27 +1,83 @@
-# CollaborativeBoard
+# 🧑‍🎨 Collaborative Board - Frontend (Angular)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.7.
+This is the frontend for a real-time collaborative board built with **Angular** and **SignalR**. It enables multiple users to interact simultaneously through drawing, sticky notes, user tracking, and action history.
 
-## Development server
+> 🚀 A lightweight, educational project that demonstrates real-time communication using WebSockets via SignalR.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+---
 
-## Code scaffolding
+## 🌟 Features
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- 🎨 **Collaborative drawing** on a shared canvas
+- 📝 **Sticky notes**: movable, editable, and synchronized in real-time
+- 👥 **Connected users list** shown in a side panel
+- 🕘 **Action history**: tracks recent actions with timestamps
+- 🔁 **Live sync** with an ASP.NET Core backend using SignalR
 
-## Build
+---
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## ⚙️ Tech Stack
 
-## Running unit tests
+- [Angular 17+](https://angular.io/)
+- [SignalR JavaScript Client](https://www.npmjs.com/package/@microsoft/signalr)
+- RxJS with Observables
+- MessagePack Protocol (optional)
+- Vanilla CSS for minimal styling
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+---
 
-## Running end-to-end tests
+## 🚀 Getting Started
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### 1. Clone the repository
 
-## Further help
+```bash
+git clone https://github.com/your-username/collaborative-board.git
+cd collaborative-board/frontend
+```
+### 2. Install Dependencies
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+npm install
+```
+### 3. Configure backend URL
+
+In board.service.ts, update these URLs:
+
+```bash
+private hubUrl = 'https://localhost:7231/boardHub';
+private apiUrl = 'https://localhost:7231/api/board';
+```
+### 4. Run the app
+
+```bash
+ng serve
+```
+Navigate to http://localhost:4200 to start using the app.
+
+---
+
+## 🧪 Development Notes
+
+- User identification is handled via a username stored in localStorage.
+
+- Sticky notes are draggable and deletable.
+
+- Action history updates in real-time as events occur.
+
+- MessagePack can be switched to JSON for easier debugging.
+---
+
+## 📁 Project Structure
+```bash
+📦 src/app
+├── components/
+│   └── board/            # Main board UI component
+├── services/
+│   └── board.service.ts  # SignalR logic and state management
+```
+---
+## 📸 Screenshots
+## 📃 License
+MIT — Feel free to use, modify, and distribute this for personal or educational purposes.
+## 🙌 Acknowledgments
+### Building Tomorrow, One Line at a Time by Jocelyn Llamas.

@@ -4,21 +4,21 @@
         <div class="tool-group">
             <input type="color" [(ngModel)]="currentColor" title="Color de dibujo">
             <select [(ngModel)]="currentBrushSize" title="Tamaño de pincel">
-                <option [value]="1">Fino</option>
-                <option [value]="3">Medio</option>
-                <option [value]="5">Grueso</option>
+                <option [value]="1">Fine</option>
+                <option [value]="3">Medium</option>
+                <option [value]="5">Thick</option>
             </select>
         </div>
 
         <div class="tool-group note-tools">
-            <input type="text" [(ngModel)]="noteText" placeholder="Texto de la nota" (keyup.enter)="addNote()">
-            <input type="color" [(ngModel)]="noteColor" title="Color de la nota" value="#ffeb3b">
-            <button (click)="addNote()" [disabled]="!noteText.trim()">Añadir nota</button>
+            <input type="text" [(ngModel)]="noteText" placeholder="Note text" (keyup.enter)="addNote()">
+            <input type="color" [(ngModel)]="noteColor" title="Note color" value="#ffeb3b">
+            <button (click)="addNote()" [disabled]="!noteText.trim()">Add a note</button>
         </div>
 
         <div class="tool-group">
-            <button class="danger" (click)="clearBoard()">Limpiar tablero</button>
-            <button (click)="logout()">Salir</button>
+            <button class="danger" (click)="clearBoard()">Clear Board</button>
+            <button (click)="logout()">Logout</button>
         </div>
     </div>
 
@@ -41,7 +41,7 @@
     <div class="side-panel">
         <!-- Lista de usuarios -->
         <div class="panel-section">
-            <h3>Usuarios conectados ({{ users.length }})</h3>
+            <h3>Connected users ({{ users.length }})</h3>
             <ul class="user-list">
                 <li *ngFor="let user of users">
                     {{ user.Username }}
@@ -52,7 +52,7 @@
 
         <!-- Historial de acciones -->
         <div class="panel-section">
-            <h3>Historial de acciones</h3>
+            <h3>Action History</h3>
             <div class="actions-list">
                 <div class="action-item" *ngFor="let action of actions">
                     <small>{{ action.Timestamp | date:'short' }}</small>

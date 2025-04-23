@@ -201,11 +201,11 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   // Limpiar tablero
   clearBoard(): void {
-    if (confirm('¿Estás seguro de querer limpiar el tablero?')) {
+    if (confirm('Are you sure you want to clear the board?')) {
       this.boardService.clearBoard().subscribe(() => {
-        // El canvas se limpiará cuando llegue el evento BoardCleared
-        const canvas = this.canvasRef.nativeElement;
-        this.context.clearRect(0, 0, canvas.width, canvas.height);
+      // The canvas will be cleared when the BoardCleared event is received
+      const canvas = this.canvasRef.nativeElement;
+      this.context.clearRect(0, 0, canvas.width, canvas.height);
       });
     }
   }
