@@ -3,11 +3,6 @@
     <div class="toolbar">
         <div class="tool-group">
             <input type="color" [(ngModel)]="currentColor" title="Color de dibujo">
-            <select [(ngModel)]="currentBrushSize" title="Tamaño de pincel">
-                <option [value]="1">Fine</option>
-                <option [value]="3">Medium</option>
-                <option [value]="5">Thick</option>
-            </select>
         </div>
 
         <div class="tool-group note-tools">
@@ -28,13 +23,13 @@
     </canvas>
 
     <!-- Notas adhesivas -->
-    <div class="note" *ngFor="let note of notes" [style.left.px]="note.X" [style.top.px]="note.Y"
-        [style.background-color]="note.Color" draggable="true" (dragend)="updateNotePosition(note, $event)">
+    <div class="note" *ngFor="let note of notes" [style.left.px]="note.x" [style.top.px]="note.y"
+        [style.background-color]="note.color" draggable="true" (dragend)="updateNotePosition(note, $event)">
         <div class="note-header">
-            <small *ngIf="note.ConnectionId">Por: {{ getUsernameById(note.ConnectionId) }}</small>
-            <button class="delete-btn" (click)="deleteNote(note.Id!)">×</button>
+            <small *ngIf="note.connectionId">Por: {{ getUsernameById(note.connectionId) }}</small>
+            <button class="delete-btn" (click)="deleteNote(note.id!)">×</button>
         </div>
-        <div class="note-content">{{ note.Text }}</div>
+        <div class="note-content">{{ note.text }}</div>
     </div>
 
     <!-- Panel lateral -->
@@ -44,8 +39,8 @@
             <h3>Connected users ({{ users.length }})</h3>
             <ul class="user-list">
                 <li *ngFor="let user of users">
-                    {{ user.Username }}
-                    <small *ngIf="user.ConnectionId === boardService.getCurrentConnectionId()"> (tú)</small>
+                    {{ user.username }}
+                    <small *ngIf="user.connectionId === boardService.getCurrentConnectionId()"> (tú)</small>
                 </li>
             </ul>
         </div>
@@ -55,8 +50,8 @@
             <h3>Action History</h3>
             <div class="actions-list">
                 <div class="action-item" *ngFor="let action of actions">
-                    <small>{{ action.Timestamp | date:'short' }}</small>
-                    <div>{{ action.Description }}</div>
+                    <small>{{ action.timestamp | date:'short' }}</small>
+                    <div>{{ action.description }}</div>
                 </div>
             </div>
         </div>

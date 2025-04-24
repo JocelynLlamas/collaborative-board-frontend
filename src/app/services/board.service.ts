@@ -8,41 +8,10 @@ import {
 } from '@microsoft/signalr';
 import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack';
 import { BehaviorSubject, Observable, from, tap } from 'rxjs';
-
-// Interfaces para los modelos
-export interface DrawPoint {
-  ConnectionId?: string;
-  X: number;
-  Y: number;
-  Color: string;
-  Size: number;
-  IsNewLine: boolean;
-  Timestamp?: Date;
-}
-
-export interface Note {
-  Id?: string;
-  ConnectionId?: string;
-  Text: string;
-  X: number;
-  Y: number;
-  Color: string;
-  CreatedAt?: Date;
-  UpdatedAt?: Date;
-}
-
-export interface BoardUser {
-  ConnectionId: string;
-  Username: string;
-  ConnectedAt: Date;
-}
-
-export interface BoardAction {
-  ActionType: string;
-  Username: string;
-  Timestamp: Date;
-  Description: string;
-}
+import { BoardAction } from '../models/BoardAction.interface';
+import { BoardUser } from '../models/BoardUser.interface';
+import { DrawPoint } from '../models/DrawPoint.interface';
+import { Note } from '../models/Note.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -109,6 +78,7 @@ export class BoardService {
 
   // Enviar un punto de dibujo
   public sendDrawPoint(point: DrawPoint): Observable<void> {
+    console.log('Enviando punto de dibujo:', point);
     const promise = this.hubConnection.invoke('DrawPoint', point);
     return from(promise);
   }
@@ -175,12 +145,13 @@ export class BoardService {
       console.log('Usuario desconectado:', user);
       const currentUsers = this.connectedUsersSubject.value;
       this.connectedUsersSubject.next(
-        currentUsers.filter(u => u.ConnectionId !== user.ConnectionId)
+        currentUsers.filter(u => u.connectionId !== user.connectionId)
       );
     });
 
     // Nuevo punto de dibujo
     this.hubConnection.on('NewDrawPoint', (point: DrawPoint) => {
+      console.log(`[REMOTE] Recibido grosor: ${point.size}`);
       this.drawPointSubject.next(point);
     });
 
@@ -196,7 +167,7 @@ export class BoardService {
       console.log('Nota actualizada:', note);
       const currentNotes = this.notesSubject.value;
       const updatedNotes = currentNotes.map(n =>
-        n.Id === note.Id ? note : n
+        n.id === note.id ? note : n
       );
       this.notesSubject.next(updatedNotes);
     });
@@ -206,7 +177,7 @@ export class BoardService {
       console.log('Nota eliminada:', noteId);
       const currentNotes = this.notesSubject.value;
       this.notesSubject.next(
-        currentNotes.filter(n => n.Id !== noteId)
+        currentNotes.filter(n => n.id !== noteId)
       );
     });
 
@@ -220,17 +191,17 @@ export class BoardService {
     // 🔥 Acción en tiempo real
     this.hubConnection.on('ActionOccurred', (action: any) => {
       if (!action.Description) return; // Evita insertar acciones vacías
-    
+
       const normalized: BoardAction = {
-        ActionType: action.ActionType,
-        Username: action.Username,
-        Timestamp: new Date(action.Timestamp),
-        Description: action.Description
+        actionType: action.ActionType,
+        username: action.Username,
+        timestamp: new Date(action.Timestamp),
+        description: action.Description
       };
-    
+
       const current = this.actionsSubject.value;
       this.actionsSubject.next([...current, normalized]);
-    });    
+    });
 
   }
 }

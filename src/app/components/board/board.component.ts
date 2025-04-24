@@ -1,9 +1,13 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { BoardService, DrawPoint, Note, BoardUser, BoardAction } from '../../services/board.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { BoardAction } from '../../models/BoardAction.interface';
+import { BoardUser } from '../../models/BoardUser.interface';
+import { DrawPoint } from '../../models/DrawPoint.interface';
+import { Note } from '../../models/Note.interface';
+import { BoardService } from '../../services/board.service';
 
 @Component({
   selector: 'app-board',
@@ -111,11 +115,11 @@ export class BoardComponent implements OnInit, OnDestroy {
 
     // Enviar punto al servidor
     const point: DrawPoint = {
-      X: x,
-      Y: y,
-      Color: this.currentColor,
-      Size: this.currentBrushSize,
-      IsNewLine: true
+      x: x,
+      y: y,
+      color: this.currentColor,
+      size: this.currentBrushSize,
+      isNewLine: true
     };
 
     this.boardService.sendDrawPoint(point).subscribe();
@@ -135,12 +139,17 @@ export class BoardComponent implements OnInit, OnDestroy {
 
     // Enviar punto al servidor
     const point: DrawPoint = {
-      X: x,
-      Y: y,
-      Color: this.currentColor,
-      Size: this.currentBrushSize,
-      IsNewLine: false
+      x: x,
+      y: y,
+      color: this.currentColor,
+      size: Number(this.currentBrushSize),
+      isNewLine: false
     };
+
+    if (typeof point.size !== 'number' || isNaN(point.size)) {
+      console.warn('❌ Invalid brush size! DrawPoint not sent.', point);
+      return;
+    }
 
     this.boardService.sendDrawPoint(point).subscribe();
   }
@@ -152,13 +161,13 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   // Dibujar punto recibido de otro usuario
   drawRemotePoint(point: DrawPoint): void {
-    if (point.IsNewLine) {
+    if (point.isNewLine) {
       this.context.beginPath();
-      this.context.moveTo(point.X, point.Y);
+      this.context.moveTo(point.x, point.y);
     } else {
-      this.context.lineTo(point.X, point.Y);
-      this.context.strokeStyle = point.Color;
-      this.context.lineWidth = point.Size;
+      this.context.lineTo(point.x, point.y);
+      this.context.strokeStyle = point.color;
+      this.context.lineWidth = point.size;
       this.context.lineCap = 'round';
       this.context.stroke();
     }
@@ -179,10 +188,10 @@ export class BoardComponent implements OnInit, OnDestroy {
     if (!this.noteText.trim()) return;
 
     const note: Note = {
-      Text: this.noteText,
-      X: Math.random() * (window.innerWidth - 200),
-      Y: Math.random() * (window.innerHeight - 200),
-      Color: this.noteColor
+      text: this.noteText,
+      x: Math.random() * (window.innerWidth - 200),
+      y: Math.random() * (window.innerHeight - 200),
+      color: this.noteColor
     };
 
     this.boardService.addNote(note).subscribe(() => {
@@ -203,9 +212,9 @@ export class BoardComponent implements OnInit, OnDestroy {
   clearBoard(): void {
     if (confirm('Are you sure you want to clear the board?')) {
       this.boardService.clearBoard().subscribe(() => {
-      // The canvas will be cleared when the BoardCleared event is received
-      const canvas = this.canvasRef.nativeElement;
-      this.context.clearRect(0, 0, canvas.width, canvas.height);
+        // The canvas will be cleared when the BoardCleared event is received
+        const canvas = this.canvasRef.nativeElement;
+        this.context.clearRect(0, 0, canvas.width, canvas.height);
       });
     }
   }
@@ -218,15 +227,15 @@ export class BoardComponent implements OnInit, OnDestroy {
   }
   // Obtener username a partir de un connectionId
   getUsernameById(connectionId: string): string {
-    const user = this.users.find(u => u.ConnectionId === connectionId);
-    return user ? user.Username : 'Usuario desconocido';
+    const user = this.users.find(u => u.connectionId === connectionId);
+    return user ? user.username : 'Usuario desconocido';
   }
 
   updateNotePosition(note: Note, event: DragEvent): void {
     const updatedNote = {
       ...note,
-      X: event.clientX - 50,
-      Y: event.clientY - 20
+      x: event.clientX - 50,
+      y: event.clientY - 20
     };
     this.updateNote(updatedNote);
   }
